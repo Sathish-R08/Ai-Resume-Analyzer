@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {useLocation, useNavigate} from "react-router";
 
 export const meta = () => ([
-    { title: 'Resumind | Auth' },
+    { title: 'RezuMatch.Ai | Auth' },
     { name: 'description', content: 'Log into your account' },
 ])
 
