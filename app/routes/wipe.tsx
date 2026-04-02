@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { usePuterStore } from "~/lib/puter";
+import { useStore } from "~/lib/store";
 
 const WipeApp = () => {
-    const { auth, isLoading, error, clearError, fs, ai, kv } = usePuterStore();
+    const { auth, isLoading, error, clearError, fs, ai, kv } = useStore();
     const navigate = useNavigate();
     const [files, setFiles] = useState<FSItem[]>([]);
 

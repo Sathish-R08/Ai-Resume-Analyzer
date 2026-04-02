@@ -1,7 +1,7 @@
 import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
 import ResumeCard from "~/components/ResumeCard";
-import {usePuterStore} from "~/lib/puter";
+import {useStore} from "~/lib/store";
 import {Link, useNavigate} from "react-router";
 import {useEffect, useState} from "react";
 
@@ -13,7 +13,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const { auth, kv } = usePuterStore();
+  const { auth, kv } = useStore();
   const navigate = useNavigate();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loadingResumes, setLoadingResumes] = useState(false);
@@ -26,20 +26,44 @@ export default function Home() {
     const loadResumes = async () => {
       setLoadingResumes(true);
 
-      const resumes = (await kv.list('resume:*', true)) as KVItem[];
+      try {
+        const resumeKeys = (await kv.list('resume:', false)) as string[];
 
-      const parsedResumes = resumes?.map((resume) => (
-          JSON.parse(resume.value) as Resume
-      ))
+        if (!resumeKeys || resumeKeys.length === 0) {
+          setResumes([]);
+          setLoadingResumes(false);
+          return;
+        }
 
-      setResumes(parsedResumes || []);
+        const parsedResumes: Resume[] = [];
+        for (const key of resumeKeys) {
+          try {
+            const value = await kv.get(key);
+            if (value) {
+              parsedResumes.push(JSON.parse(value) as Resume);
+            }
+          } catch (e) {
+            console.error(`Failed to parse resume for key ${key}:`, e);
+          }
+        }
+
+        setResumes(parsedResumes);
+      } catch (error) {
+        console.error('Failed to load resumes:', error);
+        setResumes([]);
+      }
+
       setLoadingResumes(false);
     }
 
     loadResumes()
   }, []);
 
-  return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
+  const handleDeleteResume = (id: string) => {
+    setResumes(prev => prev.filter(r => r.id !== id));
+  };
+
+  return <main>
     <Navbar />
 
     <section className="main-section">
@@ -60,7 +84,7 @@ export default function Home() {
       {!loadingResumes && resumes.length > 0 && (
         <div className="resumes-section">
           {resumes.map((resume) => (
-              <ResumeCard key={resume.id} resume={resume} />
+              <ResumeCard key={resume.id} resume={resume} onDelete={handleDeleteResume} />
           ))}
         </div>
       )}
