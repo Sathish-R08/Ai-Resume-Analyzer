@@ -174,7 +174,16 @@ const Upload = () => {
                                 />
                             </div>
                             <p className="text-center text-gray-500 font-medium">{progress}%</p>
-                            <img src="/images/resume-scan-2.gif" className="w-48 mx-auto mt-4 mix-blend-multiply" />
+                            <div className="relative w-28 h-36 mx-auto mt-6 bg-white border-[3px] border-slate-200 rounded-xl shadow-sm overflow-hidden flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-14 h-14 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                <div className="absolute left-0 w-full h-[4px] bg-blue-500 shadow-[0_0_15px_4px_rgba(59,130,246,0.5)] animate-[scanner_2s_ease-in-out_infinite]" style={{ animationName: 'scanner' }}></div>
+                            </div>
                         </div>
                     ) : (
                         <h2>Upload your resume for an ATS score and improvement tips</h2>
